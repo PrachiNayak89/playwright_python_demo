@@ -1,0 +1,22 @@
+# Ignore everything in this directory
+
+*.py[cod]
+.cache
+chrome.log
+debug.log
+todo.md
+*.text
+.ssh/*
+.bash_history
+.git-credentials
+**/report.html
+.gitconfig
+.ipython/*
+.idea
+*.viminfo
+ENV
+*.png
+.ropeproject
+venv/
+# Except this file
+!.gitignore
