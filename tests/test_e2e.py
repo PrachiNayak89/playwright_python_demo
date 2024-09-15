@@ -1,8 +1,7 @@
 import pytest
 import re
 from playwright.sync_api import Page, expect
-from playwright_python_demo.data import generate_random_name, generate_random_email, generate_random_password, \
-    generate_random_title, generate_random_description
+import playwright_python_demo.data as data
 
 
 @pytest.mark.register
@@ -16,16 +15,17 @@ def test_register_new_user(page: Page):
     # Click on the email field
     page.get_by_label("Email").click()
     # Fill the email field
-    user_email = generate_random_email(generate_random_name())
+    user_email = data.generate_random_email(data.generate_random_name())
     page.get_by_label("Email").fill(user_email)
     # Click on the pw field
     page.get_by_label("Password").click()
     # Fill the pw field
-    pw = generate_random_password()
+    pw = data.generate_random_password()
     page.get_by_label("Password").fill(pw)
     # Click on the register button
     page.get_by_role("main").get_by_role("button", name="Register").click()
     # Verify the success message
+    # expect(page.locator("div").filter(has_text=re.compile(r"^Login$"))).to_be_visible()
     expect(page.get_by_text("Registration successful!")).to_be_visible()
 
 
@@ -40,12 +40,12 @@ def test_login_new_user(page: Page):
     # Click on the email field
     page.get_by_label("Email").click()
     # Fill the email field
-    user_email = generate_random_email(generate_random_name())
+    user_email = data.generate_random_email(data.generate_random_name())
     page.get_by_label("Email").fill(user_email)
     # Click on the pw field
     page.get_by_label("Password").click()
     # Fill the pw field
-    pw = generate_random_password()
+    pw = data.generate_random_password()
     page.get_by_label("Password").fill(pw)
     # Click on the register button
     page.get_by_role("main").get_by_role("button", name="Register").click()
@@ -76,12 +76,12 @@ def test_create_new_ticket(page: Page):
     # Click on the email field
     page.get_by_label("Email").click()
     # Fill the email field
-    user_email = generate_random_email(generate_random_name())
+    user_email = data.generate_random_email(data.generate_random_name())
     page.get_by_label("Email").fill(user_email)
     # Click on the pw field
     page.get_by_label("Password").click()
     # Fill the pw field
-    pw = generate_random_password()
+    pw = data.generate_random_password()
     page.get_by_label("Password").fill(pw)
     # Click on the register button
     page.get_by_role("main").get_by_role("button", name="Register").click()
@@ -103,11 +103,11 @@ def test_create_new_ticket(page: Page):
     page.goto('/dashboard')
     page.get_by_role("button", name="Create Support Ticket").click()
     # Enter the title of the ticket
-    ticket_title = generate_random_title()
+    ticket_title = data.generate_random_title()
     page.get_by_label("Title").click()
     page.get_by_label("Title").fill(ticket_title)
     # Enter the description of the ticket
-    ticket_description = generate_random_description()
+    ticket_description = data.generate_random_description()
     page.get_by_label("Description").click()
     page.get_by_label("Description").fill(ticket_description)
     # Click on Submit ticket
@@ -127,12 +127,12 @@ def test_create_new_case(page: Page):
     # Click on the email field
     page.get_by_label("Email").click()
     # Fill the email field
-    user_email = generate_random_email(generate_random_name())
+    user_email = data.generate_random_email(data.generate_random_name())
     page.get_by_label("Email").fill(user_email)
     # Click on the pw field
     page.get_by_label("Password").click()
     # Fill the pw field
-    pw = generate_random_password()
+    pw = data.generate_random_password()
     page.get_by_label("Password").fill(pw)
     # Click on the register button
     page.get_by_role("main").get_by_role("button", name="Register").click()
@@ -154,7 +154,7 @@ def test_create_new_case(page: Page):
     page.goto('/dashboard')
     page.get_by_role("button", name="Create Case").click()
     # Enter the case name
-    case_name = generate_random_name() + '_case_'
+    case_name = data.generate_random_name() + '_case_'
     page.get_by_label("Case Name").click()
     page.get_by_label("Case Name").fill(case_name)
     # Select the case type

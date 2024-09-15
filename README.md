@@ -24,6 +24,7 @@ API Documentation of AUT: http://100.27.30.112/docs#/
 * pytest.ini
 * data.py
 * tests/
+* conftest.py
 * report.html (will be created at root level once test runs)
 
 #### Pre-requisite: Installations
@@ -39,5 +40,5 @@ API Documentation of AUT: http://100.27.30.112/docs#/
 
 #### Links
 * Playwright installation: https://playwright.dev/python/docs/intro#installing-playwright-pytest
-* Pytest HTML 1 report: https://pypi.org/project/pytest-reporter-html1/
+* Pytest HTML1 report: https://pypi.org/project/pytest-reporter-html1/
 * Playwright-pytest CLI options: https://playwright.dev/python/docs/running-tests

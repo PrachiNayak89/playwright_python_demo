@@ -3,6 +3,12 @@ import random
 import string
 from playwright.sync_api import Page as page
 
+base_url = 'http://100.27.30.112/api'
+
+tickets_api_endpoint = '/tickets'
+
+cases_api_endpoint = '/cases'
+
 
 def get_random_word(length=3):
     uppercase = string.ascii_uppercase
