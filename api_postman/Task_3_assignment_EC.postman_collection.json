@@ -1,0 +1,734 @@
+{
+	"info": {
+		"_postman_id": "d79d654c-55f7-4317-aebc-4dd3485a2aff",
+		"name": "Task_3_assignment_EC",
+		"description": "### Task 3: API Testing with Postman\n\nAPI doc: [http://100.27.30.112/docs](http://100.27.30.112/docs)\n\nAUT: [http://100.27.30.112/](http://100.27.30.112/)\n\n**Scenario**\n\nUsing the provided API documentation, create a Postman collection to automate testing of at least 5 API endpoints. The focus should be on endpoints related to user management, support ticket creation, and case creation.\n\n**Expected Output**\n\nA Postman collection with detailed requests for at least 5 API endpoints (e.g., register, login, create-ticket, create-case, get-tickets).\n\nEndFragment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30057733"
+	},
+	"item": [
+		{
+			"name": "Post register new user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");\r",
+							"\r",
+							"var random = Math.random().toString(36).substring(2);\r",
+							"var useremailid = \"test\"+random+\"@domain.com\"\r",
+							"var userpw = \"test\"+random+\"pw\";\r",
+							"\r",
+							"pm.collectionVariables.set(\"user_email_id\",useremailid);\r",
+							"pm.collectionVariables.set(\"user_pw\",userpw);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test data of the response\", function(){\r",
+							"    pm.expect(jsonData).to.be.an(\"object\");\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Value of the message field\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"User created successfully\");\r",
+							"\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{user_email_id}}\",\r\n  \"password\": \"{{user_pw}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/register/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"register",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post login new user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");\r",
+							"pm.collectionVariables.get(\"user_email_id\");\r",
+							"pm.collectionVariables.get(\"user_pw\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"message\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"is_admin\": {\r",
+							"      \"type\": \"boolean\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"message\",\r",
+							"    \"user_id\",\r",
+							"    \"is_admin\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Schema is valid\", function(){\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"var_user_id\", jsonData.user_id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test data of the response\", function(){\r",
+							"    pm.expect(jsonData).to.be.an(\"object\");\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.user_id).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.is_admin).to.be.a(\"boolean\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Value of the response field\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"Login successful\");\r",
+							"    pm.expect(jsonData.is_admin).to.be.false;\r",
+							"\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{user_email_id}}\",\r\n  \"password\": \"{{user_pw}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/login/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post create ticket",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");\r",
+							"pm.collectionVariables.get(\"var_user_id\");\r",
+							"\r",
+							"var random = Math.random().toString(36).substring(2);\r",
+							"var tickettitle = \"test_ticket\"+random+\"_title\"\r",
+							"var ticketdescription = \"test_ticket\"+random+\"_description\";\r",
+							"\r",
+							"pm.collectionVariables.set(\"ticket_title\",tickettitle);\r",
+							"pm.collectionVariables.set(\"ticket_description\",ticketdescription);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test data of the response\", function(){\r",
+							"    pm.expect(jsonData).to.be.an(\"object\");\r",
+							"    pm.expect(jsonData.description).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.user_id).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.title).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.status).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+							"});\r",
+							"\r",
+							"var ticket_title = pm.collectionVariables.get(\"ticket_title\");\r",
+							"var title_desc= pm.collectionVariables.get(\"ticket_description\");\r",
+							"var user_id = pm.collectionVariables.get(\"var_user_id\");\r",
+							"\r",
+							"pm.test(\"Value of the response fields\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.description).to.eql(title_desc);\r",
+							"    pm.expect(jsonData.user_id).to.eql(user_id);\r",
+							"    pm.expect(jsonData.title).to.eql(ticket_title);\r",
+							"    pm.expect(jsonData.status).to.eql(\"open\");\r",
+							"\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"var_ticket_id\", jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"{{ticket_title}}\",\r\n  \"description\": \"{{ticket_description}}\",\r\n  \"user_id\": {{var_user_id}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/tickets/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"tickets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put ticket status update",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");\r",
+							"pm.collectionVariables.get(\"var_ticket_id\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\":\"close\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/tickets/{{var_ticket_id}}",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"tickets",
+						"{{var_ticket_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post create case",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");\r",
+							"pm.collectionVariables.get(\"var_user_id\");\r",
+							"\r",
+							"var random = Math.random().toString(36).substring(2);\r",
+							"var casenametest = \"test_case\"+random+\"_name\"\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"case_name_test\",casenametest);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test data of the response\", function(){\r",
+							"    pm.expect(jsonData).to.be.an(\"object\");\r",
+							"    pm.expect(jsonData.case_name).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.status).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.item_id).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.user_id).to.be.a(\"number\");\r",
+							"});\r",
+							"\r",
+							"var case_name = pm.collectionVariables.get(\"case_name_test\");\r",
+							"\r",
+							"var user_id = pm.collectionVariables.get(\"var_user_id\");\r",
+							"\r",
+							"pm.test(\"Value of the response field\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.case_name).to.eql(case_name);\r",
+							"    pm.expect(jsonData.user_id).to.eql(user_id);\r",
+							"    pm.expect(jsonData.status).to.eql(\"open\");\r",
+							"\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"var_case_id\", jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"case_name\": \"{{case_name_test}}\",\r\n  \"user_id\": {{var_user_id}},\r\n  \"item_id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/cases/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"cases",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put case status update",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");\r",
+							"pm.collectionVariables.get(\"var_case_id\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\":\"close\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/cases/{{var_case_id}}",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"cases",
+						"{{var_case_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all tickets",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/tickets",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"tickets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all cases",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/cases",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"cases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Admin stats",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.get(\"BASE_URL\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"total_tickets\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"open_tickets\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"closed_tickets\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"total_cases\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"open_cases\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"closed_cases\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"total_tickets\",\r",
+							"    \"open_tickets\",\r",
+							"    \"closed_tickets\",\r",
+							"    \"total_cases\",\r",
+							"    \"open_cases\",\r",
+							"    \"closed_cases\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Schema is valid\", function(){\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal('application/json');\r",
+							"});\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/admin/stats",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://100.27.30.112",
+			"type": "string"
+		},
+		{
+			"key": "user_email_id",
+			"value": ""
+		},
+		{
+			"key": "user_pw",
+			"value": ""
+		},
+		{
+			"key": "var_user_id",
+			"value": ""
+		},
+		{
+			"key": "ticket_title",
+			"value": ""
+		},
+		{
+			"key": "ticket_description",
+			"value": ""
+		},
+		{
+			"key": "case_name_test",
+			"value": ""
+		},
+		{
+			"key": "var_case_id",
+			"value": ""
+		},
+		{
+			"key": "var_ticket_id",
+			"value": ""
+		}
+	]
+}

@@ -10,12 +10,12 @@ tickets_api_endpoint = '/tickets'
 cases_api_endpoint = '/cases'
 
 
-def get_random_word(length=3):
+def get_random_word(length=5):
     uppercase = string.ascii_uppercase
     return ''.join([random.choice(uppercase[:length]) for _ in range(length)])
 
 
-def get_random_number(length=3):
+def get_random_number(length=5):
     numbers = string.digits
     return ''.join([random.choice(numbers[:length]) for _ in range(length)])
 

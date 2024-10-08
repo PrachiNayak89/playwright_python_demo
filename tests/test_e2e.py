@@ -24,6 +24,7 @@ def test_register_new_user(page: Page):
     page.get_by_label("Password").fill(pw)
     # Click on the register button
     page.get_by_role("main").get_by_role("button", name="Register").click()
+    page.get_by_role("main").get_by_role("button", name="Register").click()
     # Verify the success message
     # expect(page.locator("div").filter(has_text=re.compile(r"^Login$"))).to_be_visible()
     expect(page.get_by_text("Registration successful!")).to_be_visible()
